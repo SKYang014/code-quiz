@@ -13,17 +13,17 @@
     //grab questino area
     var askQuestionEl = document.querySelector(".question-area");
     //create questions array
-    var questions = ['Is coding cool?', 'Scoping refers to a typo, ', 'this is question 3']
+    var questions = ['Storing data in local storage must be in ____ format.', 'Scoping refers to a typo about scooping ice cream.', 'Coding is best done at 2am.']
     //create right answers array
-    var rightAns = ['Yes', 'right2', 'right3']
+    var rightAns = ['String', 'False', 'True, programmers share one brain and there is more access when it is dark outside 🦇.']
     //create wrong answers array
-    var wrongAns = ['No', 'wrong2', 'wrong3']
+    var wrongAns = ['Object', 'True', 'False, lightmode at noon is your strongest form. 💪☀︎']
     //initials and score array to save to loacl storage?
     var highscore = [];
     //stored stats
     var oldStats = [];
     //timer
-    var timeLeft = 5
+    var timeLeft = 60
 
 // Timer
 function countdown() {
