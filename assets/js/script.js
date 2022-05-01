@@ -13,15 +13,15 @@
     //grab questino area
     var askQuestionEl = document.querySelector(".question-area");
     //create questions array
-    var questions = ['this is question 1', 'this is question 2', 'this is question 3']
+    var questions = ['Is coding cool?', 'Scoping refers to a typo, ', 'this is question 3']
     //create right answers array
-    var rightAns = ['right1', 'right2', 'right3']
+    var rightAns = ['Yes', 'right2', 'right3']
     //create wrong answers array
-    var wrongAns = ['wrong1', 'wrong2', 'wrong3']
+    var wrongAns = ['No', 'wrong2', 'wrong3']
     //initials and score array to save to loacl storage?
     var highscore = [];
     //stored stats
-    var oldStats = []
+    var oldStats = [];
     //timer
     var timeLeft = 5
 
@@ -132,42 +132,104 @@ var startQuiz = function() {
     
 // }
 
-var saveGame = function () {
-    var savedStats = localStorage.getItem("record");
-    oldStats = JSON.parse(savedStats)
-    if (oldStats.points < highscore.points || oldStats.points === null)
+
+
+
+var saveScore = function() {
     localStorage.setItem("record", JSON.stringify(highscore));
-    loadGame();
-}
+};
 
-var loadGame = function() {
-    savedStats = localStorage.getItem("record");
+var saveGame = function () {
+    //grab old score and turn into obj
+    oldStats = localStorage.getItem("record");
+    oldStats = JSON.parse(oldStats);
+    console.log(oldStats);
+    console.log(highscore.points);
+    //if 0 return
 
-    if (savedStats === null) {
-        highscore = []
+    var restart = document.createElement("li");
+    $("li").remove();
+    restart.innerHTML = "<btn class='restart'> Do you want to try again? </btn>";
+    restart.addEventListener("click", tryAgain);
+    startBtn.addEventListener("click", tryAgain);
+    ansEl.appendChild(restart);
+
+    if (oldStats === null){
+        oldStats = []
+        var firstGame = document.createElement("h3");
+        $( "h3" ).remove();
+        //options to restart/refresh page
+        firstGame.innerHTML = "<h3>" + highscore.init + ", your score is " 
+        + highscore.points + ".  This is the first score!";
+        askQuestionEl.appendChild(firstGame);
+        saveScore();
+        restart();
         return false;
     }
+    //if current score (highscore) is greater than old score, save new, higher score
+    if (oldStats.points < highscore.points) {
+        var winText = document.createElement("h3");
+        $( "h3" ).remove();
+        //options to restart/refresh page
+        winText.innerHTML = "<h3>" + highscore.init + ", your score is " 
+        + highscore.points + ".  You've beat the current high score of " 
+        + oldStats.points + ". </h3>";
+        askQuestionEl.appendChild(winText);
 
-    console.log("this is string: " + savedStats);
+        //restart mechanic
 
-    highscore = JSON.parse(savedStats)
 
-    console.log("this is object: " + highscore);
+
+        //save new high score
+        saveScore();
+        winText();
+        console.log("i ran restart");
+        restart();
+    }
+    
+    else {
+        //if score is not higher, do not save score
+        var loseText = document.createElement("h3");
+        $( "h3" ).remove();
+        //options to restart/refresh page
+        loseText.innerHTML = "<h3>" + highscore.init + ", your score is " 
+        + highscore.points + ".  You did not beat the high score of:  " 
+        + oldStats.points + ". </h3>";
+        askQuestionEl.appendChild(loseText);
+        restart();
+    }
+
+    // loadGame();
+}
+
+// var loadGame = function() {
+//     savedStats = localStorage.getItem("record");
+
+//     if (savedStats === null) {
+//         highscore = []
+//         return false;
+//     }
+
+//     console.log("this is string: " + savedStats);
+
+//     highscore = JSON.parse(savedStats)
+
+//     console.log("this is object: " + highscore);
 
     var tryAgain = function () {
             window.location.reload();
     }
-    var restart = document.createElement("h3");
-            $( "h3" ).remove();
-            restart.innerHTML = "<h3>" + highscore.init + ", your score is " 
-            + highscore.points + ".  You've beat the current high score of " 
-            + highscore.points + ". </h3><btn class='restart'> Do you want to try again? </btn>";
-            askQuestionEl.appendChild(restart);
-            restart.addEventListener("click", tryAgain);
-            startBtn.addEventListener("click", tryAgain);
+//     var restart = document.createElement("h3");
+//             $( "h3" ).remove();
+//             restart.innerHTML = "<h3>" + highscore.init + ", your score is " 
+//             + highscore.points + ".  You've beat the current high score of " 
+//             + highscore.points + ". </h3><btn class='restart'> Do you want to try again? </btn>";
+//             askQuestionEl.appendChild(restart);
+//             restart.addEventListener("click", tryAgain);
+//             startBtn.addEventListener("click", tryAgain);
 
-    // tryAgain();
-}
+//     // tryAgain();
+// }
 
 
 //below is copied code
