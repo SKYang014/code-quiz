@@ -10,6 +10,8 @@
     var rightAns = ['right1', 'right2', 'right3']
     //create wrong answers array
     var wrongAns = ['wrong1', 'wrong2', 'wrong3']
+    //initials and score array to save to loacl storage?
+    var highscore = []
 
 // Timer
 function countdown() {
@@ -38,18 +40,25 @@ var startQuiz = function() {
     // start timer
     countdown();
     // endGame function if  i > questions length OR timer <= 0 
-    for (var i = 0; i < questions.length; i++){
+    if (i > questions.length || timeLeft <= 0)
         //display 'done'
         //display score
         //enter initials
+        var initials = window.prompt("Finished! Your score is: " + score + ".  Enter in your initials: ")
+        console.log(initials);
         //save data locally
+        localStorage.setItem("initials", "score")
+
+
         //display 'high scores'
-    }   
-    // if i < quetions.length
+
+
+    // for i < quetions.length
+    for (var i = 0; i < questions.length; i++){
         //dynamically create question, h2 in div
         //dynamically create correct answer
         //dynamically create wrong answers
-
+    }
     //if correct answer clicked
         //display correct
         // score = score + 1
