@@ -2,9 +2,16 @@
     var startBtn = document.querySelector("#start");
     //score
     var score = 0
+    //setting index
+    var i = 0
     //timer
     var timerEl = document.getElementById('countdown');
-
+    //element listener
+    var pageContentEl = document.querySelector(".page-content");
+    //grab answers area
+    var ansEl = document.querySelector(".answers");
+    //grab questino area
+    var askQuestionEl = document.querySelector(".question-area");
     //create questions array
     var questions = ['this is question 1', 'this is question 2', 'this is question 3']
     //create right answers array
@@ -12,12 +19,14 @@
     //create wrong answers array
     var wrongAns = ['wrong1', 'wrong2', 'wrong3']
     //initials and score array to save to loacl storage?
-    var highscore = []
+    var highscore = [];
+    //stored stats
+    var oldStats = []
+    //timer
+    var timeLeft = 5
 
 // Timer
 function countdown() {
-    var timeLeft = 60;
-
     // starts timer count down
     var timeInterval = setInterval(function () {
       // if timer >1 then display time left and subtract 1 from timer
@@ -35,53 +44,151 @@ function countdown() {
     }, 1000);
 };
 
+
+
 // when clicked, run this code
 var startQuiz = function() {
     // start timer
     countdown();
+    // $( "btn" ).remove();
     // endGame function if  i > questions length OR timer <= 0 
     var endGame = function () {
-    if (i > questions.length || timeLeft <= 0)
+        console.log(5);
         //display 'done'
         //display score
         //enter initials
         var initials = window.prompt("Finished! Your score is: " + score + ".  Enter in your initials: ")
         console.log(initials);
         //save data locally, can i do two values?
-        localStorage.setItem("hiscores", "score" + "initials");
+        highscore = {
+            init: initials,
+            points: score,
+        }
+        // createNewScore(highscore);
+        saveGame();
+        // loadGame();
         //display 'high scores'
     }
 
-    console.log(1);
-    if ( score >= 0) {
-        console.log(2);
-    // for i < quetions.length
-    for (var i = 0; i < questions.length; i++){
-        //dynamically create question, h2 in div
-        //grab questions area
-        var askQuestionEl = document.querySelector(".question-area");
-        askQuestionEl.innerHTML = "<h3 class='questions'>" + questions[i] + "</h3>";
-        console.log(questions[i]);
+    var quiz = function () {
+        if ( i < 3 && timeLeft > 0) {
+            
+        // for i < quetions.length
+        // for (var i = 0; i < questions.length; i++){
+            var incorrect = function () {
+            //if wrong answer clicked
+            //display wrong
+            //timer = timer - 5000ms
+            //go to next question, display i+1
+                $( "li" ).remove();
+                i = (i+1)
+                timeLeft = (timeLeft - 5); 
+                quiz();
+            }
+
+            var correct = function () {
+            //if correct answer clicked
+            //display correct
+            // score = score + 1
+            //go to next question, display i+1
+                $( "li" ).remove();
+                i = (i+1)
+                score = score + 1;
+                console.log("score: " + score);
+                quiz();
+            }
+            
+            //dynamically create question, h2 in div
+            //have i +1 on button click
+            //grab questions area
+            
+            
+            
+            askQuestionEl.innerHTML = "<h3 class='questions'>" + questions[i] + "</h3>";
+            console.log(questions[i]);
+
+
+            //create correct answer area
+            var rightAnsEl = document.createElement("li");
+            rightAnsEl.innerHTML = "<btn class='right-ans ans'>" + rightAns[i] + "</btn>";
+            ansEl.appendChild(rightAnsEl);
+            rightAnsEl.addEventListener("click", correct);
+
+            //create wrong answers
+            var wrongAnsEl = document.createElement("li");
+            wrongAnsEl.innerHTML = "<btn class='wrong-ans ans'>" + wrongAns[i] + "</btn>";
+            ansEl.appendChild(wrongAnsEl);
+            wrongAnsEl.addEventListener("click", incorrect);
+        }
     
-        //dynamically create correct answer
-        var rightAnsEl = document.querySelector(".answers");
-        rightAnsEl.innerHTML = "<li class='right-ans'>" + rightAns[i] + "</li>";
-        console.log(rightAns[i]);
-
-        //dynamically create wrong answers
-        var wrongAnsEl = document.querySelector(".answers");
-        wrongAnsEl.innerHTML = "<li class='wrong-ans'>" + wrongAns[i] + "</li>";
+        else {
+            endGame();
+        }   
     }
-    //if correct answer clicked
-        //display correct
-        // score = score + 1
-        //go to next question, display i+1
-
-    //if wrong answer clicked
-        //display wrong
-        //timer = timer - 5000ms
-        //go to next question, display i+1
-    }
+    quiz();
 }
+
+// var createNewScore = function () {
+    
+// }
+
+var saveGame = function () {
+    var savedStats = localStorage.getItem("record");
+    oldStats = JSON.parse(savedStats)
+    if (oldStats.points < highscore.points || oldStats.points === null)
+    localStorage.setItem("record", JSON.stringify(highscore));
+    loadGame();
+}
+
+var loadGame = function() {
+    savedStats = localStorage.getItem("record");
+
+    if (savedStats === null) {
+        highscore = []
+        return false;
+    }
+
+    console.log("this is string: " + savedStats);
+
+    highscore = JSON.parse(savedStats)
+
+    console.log("this is object: " + highscore);
+
+    var tryAgain = function () {
+            window.location.reload();
+    }
+    var restart = document.createElement("h3");
+            $( "h3" ).remove();
+            restart.innerHTML = "<h3>" + highscore.init + ", your score is " 
+            + highscore.points + ".  You've beat the current high score of " 
+            + highscore.points + ". </h3><btn class='restart'> Do you want to try again? </btn>";
+            askQuestionEl.appendChild(restart);
+            restart.addEventListener("click", tryAgain);
+            startBtn.addEventListener("click", tryAgain);
+
+    // tryAgain();
+}
+
+
+//below is copied code
+// var loadSaveGame = function() { 
+//     // Loading
+//     var users = JSON.parse(localStorage.getItem("users") || "[]");
+// console.log("# of users: " + users.length);
+// users.forEach(function(user, index) {
+//     console.log("[" + index + "]: " + user.id);
+// });
+
+// // Modifying
+// var user = {
+//     id: Math.floor(Math.random() * 1000000)
+// };
+// users.push(user);
+// console.log("Added user #" + user.id);
+
+//     // Saving
+// localStorage.setItem("users", JSON.stringify(users));
+// };
+
 //start the test
 startBtn.addEventListener("click", startQuiz);
